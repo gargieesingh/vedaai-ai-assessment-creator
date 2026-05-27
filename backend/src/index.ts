@@ -6,6 +6,7 @@ import { Server } from 'socket.io';
 import { connectDB } from './config/db';
 import './config/redis';
 import worker, { setSocketIO } from './workers/generationWorker';
+import router from './routes/assignmentRoutes';
 
 dotenv.config();
 connectDB();
@@ -23,6 +24,9 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+app.use('/api', router);
+console.log('Routes registered');
 
 const io = new Server(httpServer, {
   cors: {
