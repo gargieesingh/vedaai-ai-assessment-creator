@@ -1,0 +1,1 @@
+export default function QuestionPaper() { return <div>Question Paper</div>; }

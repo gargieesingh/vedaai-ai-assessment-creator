@@ -1,0 +1,1 @@
+export default function OutputPage() { return <div>Output</div>; }

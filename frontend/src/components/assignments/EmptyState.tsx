@@ -1,0 +1,1 @@
+export default function EmptyState() { return <div>No assignments yet</div>; }

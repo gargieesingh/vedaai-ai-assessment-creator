@@ -1,0 +1,1 @@
+export default function SectionBlock() { return <div>Section Block</div>; }
