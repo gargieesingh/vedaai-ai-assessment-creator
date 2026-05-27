@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { connectDB } from './config/db';
+import './config/redis';
 
 dotenv.config();
 connectDB();

@@ -9,9 +9,9 @@ export const connectDB = async () => {
   }
 
   mongoose.connection.on('connected', () => {
-    console.log('mongodb connected');
+    console.log('MongoDb connected');
   });
-
+ 
   mongoose.connection.on('error', (err) => {
     console.error(err);
     process.exit(1);
