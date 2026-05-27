@@ -46,11 +46,14 @@ async function processJob(job: Job<JobData>): Promise<void> {
 
     // STEP 5: Emit socket event if io is available
     if (io) {
-      io.emit('generation:complete', {
+      const payload = {
         jobId: job.id,
         resultId: savedResult._id.toString(),
         assignmentId,
-      });
+      };
+      // Emit to specific job room (targeted) AND globally (fallback)
+      io.to(job.id as string).emit('generation:complete', payload);
+      io.emit('generation:complete', payload);
     }
 
     console.log(`Job ${job.id} completed successfully`);
@@ -61,10 +64,13 @@ async function processJob(job: Job<JobData>): Promise<void> {
     await Assignment.findByIdAndUpdate(assignmentId, { status: 'error' });
 
     if (io) {
-      io.emit('generation:error', {
+      const errorPayload = {
         jobId: job.id,
         error: error.message,
-      });
+      };
+      // Emit to specific job room (targeted) AND globally (fallback)
+      io.to(job.id as string).emit('generation:error', errorPayload);
+      io.emit('generation:error', errorPayload);
     }
 
     // Re-throw so BullMQ marks the job as failed
