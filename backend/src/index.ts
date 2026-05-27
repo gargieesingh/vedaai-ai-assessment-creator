@@ -5,6 +5,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { connectDB } from './config/db';
 import './config/redis';
+import worker, { setSocketIO } from './workers/generationWorker';
 
 dotenv.config();
 connectDB();
@@ -30,6 +31,10 @@ const io = new Server(httpServer, {
     credentials: true
   }
 });
+
+// Pass the socket.io instance to the worker (avoids circular imports)
+setSocketIO(io);
+console.log('Worker initialized and listening for jobs');
 
 app.get('/', (req, res) => {
   res.send('API is running');
