@@ -144,3 +144,28 @@ export async function getResult(req: Request, res: Response): Promise<void> {
     res.status(500).json({ success: false, message: error.message });
   }
 }
+
+// GET /api/assignments
+export async function getAssignments(req: Request, res: Response): Promise<void> {
+  try {
+    const assignments = await Assignment.find().sort({ createdAt: -1 });
+    res.status(200).json({ success: true, assignments });
+  } catch (err) {
+    const error = err as Error;
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+// DELETE /api/assignments/:id
+export async function deleteAssignmentById(req: Request, res: Response): Promise<void> {
+  try {
+    const { id } = req.params;
+    await Assignment.findByIdAndDelete(id);
+    await Result.deleteOne({ assignmentId: id });
+    res.status(200).json({ success: true, message: 'Assignment deleted' });
+  } catch (err) {
+    const error = err as Error;
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
