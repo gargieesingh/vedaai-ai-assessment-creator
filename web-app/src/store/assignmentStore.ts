@@ -160,55 +160,50 @@ export const useAssignmentStore = create<AssignmentStore>()(
             const poll = async () => {
               const res = await fetch(`${apiBase}/api/assignments/${assignmentId}`);
               if (!res.ok) throw new Error("Failed to fetch assignment status");
-              const assignment = await res.json();
+              const data = await res.json();
 
-              if (assignment.status === "completed") {
-                const sections = ["A", "B", "C"].map((section) => {
-                  const questions = (assignment.questions || [])
-                    .filter((q: any) => q.section === section)
-                    .sort((a: any, b: any) => a.questionNumber - b.questionNumber)
-                    .map((q: any, idx: number) => ({
-                      id: idx + 1,
-                      text: q.text,
-                      difficulty:
-                        q.difficulty === "Easy"
-                          ? "Easy"
-                          : q.difficulty === "Medium"
-                            ? "Moderate"
-                            : "Challenging",
-                      marks: q.marks,
-                      options: q.options,
-                    }));
+              console.log('[Poll] assignment status:', data.status, data);
 
-                  return {
-                    title: `Section ${section}`,
-                    instruction: "Attempt all questions.",
-                    questions,
-                  };
-                });
+              if (data.status === "complete" && data.result) {
+                const result = data.result;
 
                 const paper: GeneratedPaper = {
                   school: formData.school,
-                  subject: assignment.subject || formData.subject,
-                  class: assignment.grade || formData.class,
-                  timeAllowed: `${assignment.duration ?? duration} minutes`,
-                  maxMarks: assignment.totalMarks ?? totalMarks,
-                  sections,
-                  answerKey: (assignment.questions || []).map((q: any, idx: number) => ({
-                    id: idx + 1,
-                    text: `Answer key for ${q.id} is not available yet.`,
+                  subject: result.metadata?.subject || formData.subject,
+                  class: result.metadata?.className || formData.class,
+                  timeAllowed: result.metadata?.timeAllowed || formData.timeAllowed,
+                  maxMarks: result.metadata?.totalMarks || totalMarks,
+                  sections: (result.sections || []).map((sec: any) => ({
+                    title: sec.title,
+                    instruction: sec.instruction,
+                    questions: (sec.questions || []).map((q: any, idx: number) => ({
+                      id: idx + 1,
+                      text: q.text,
+                      difficulty: q.difficulty,
+                      marks: q.marks,
+                      options: q.options,
+                      answerKey: q.answerKey,
+                    })),
                   })),
+                  answerKey: (result.sections || []).flatMap((sec: any) =>
+                    (sec.questions || []).map((q: any, idx: number) => ({
+                      id: idx + 1,
+                      text: q.answerKey || "N/A",
+                    }))
+                  ),
                 };
 
                 set({ isGenerating: false, generatedOutput: paper });
                 return;
               }
 
-              if (assignment.status === "failed") {
+              if (data.status === "error") {
+                console.error('[Poll] generation failed');
                 set({ isGenerating: false, generatedOutput: null });
                 return;
               }
 
+              // Still pending or processing — keep polling
               setTimeout(poll, 2000);
             };
 

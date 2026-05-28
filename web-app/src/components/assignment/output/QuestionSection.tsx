@@ -26,8 +26,8 @@ export default function QuestionSection({ section }: { section: Section }) {
       </p>
 
       <ol style={{ paddingLeft: 20, listStyle: "decimal" }}>
-        {section.questions.map((question) => (
-          <QuestionItem key={question.id} question={question} />
+        {section.questions.map((question, idx) => (
+          <QuestionItem key={`${section.title}-q-${idx}`} question={question} />
         ))}
       </ol>
     </div>

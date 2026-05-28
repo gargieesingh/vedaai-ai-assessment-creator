@@ -10,9 +10,9 @@ export default function AnswerKeySection({ paper }: { paper: GeneratedPaper }) {
         Answer Key:
       </p>
       <ol style={{ paddingLeft: 20, listStyle: "decimal" }}>
-        {paper.answerKey.map((ans) => (
+        {paper.answerKey.map((ans, idx) => (
           <li
-            key={ans.id}
+            key={`ans-${idx}`}
             style={{ fontSize: 14, lineHeight: 1.7, color: "#4B4B4B", marginBottom: 8 }}
           >
             {ans.text}
