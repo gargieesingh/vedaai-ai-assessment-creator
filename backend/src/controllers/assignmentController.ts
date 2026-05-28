@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Assignment } from '../models/Assignment';
 import { Result } from '../models/Result';
 import { addGenerationJob } from '../services/queue';
+import mongoose from 'mongoose';
 
 // POST /api/assignments
 export async function createAssignment(req: Request, res: Response): Promise<void> {
@@ -34,22 +35,50 @@ export async function createAssignment(req: Request, res: Response): Promise<voi
       ? instructions.trim().slice(0, 50)
       : 'Untitled Assignment';
 
+    // Parse dueDate — frontend sends DD-MM-YYYY, convert to a valid Date
+    let parsedDueDate: Date;
+    if (typeof dueDate === 'string' && dueDate.includes('-')) {
+      const parts = dueDate.split('-');
+      // DD-MM-YYYY format from frontend
+      if (parts[0].length === 2) {
+        const [dd, mm, yyyy] = parts;
+        parsedDueDate = new Date(`${yyyy}-${mm}-${dd}`);
+      } else {
+        // Already YYYY-MM-DD or ISO format
+        parsedDueDate = new Date(dueDate);
+      }
+    } else {
+      parsedDueDate = new Date(dueDate);
+    }
+
+    if (isNaN(parsedDueDate.getTime())) {
+      res.status(400).json({ success: false, message: 'Invalid dueDate format. Use DD-MM-YYYY.' });
+      return;
+    }
+
     const assignment = await Assignment.create({
       title,
       fileUrl,
-      dueDate,
+      dueDate: parsedDueDate,
       questionTypes,
       instructions,
       status: 'pending',
     });
 
+    // Automatically kick off AI generation
+    const assignmentData = { instructions, questionTypes };
+    const jobId = await addGenerationJob(assignment._id.toString(), assignmentData);
+    await Assignment.findByIdAndUpdate(assignment._id, { jobId });
+
     res.status(201).json({
       success: true,
       assignmentId: assignment._id,
-      message: 'Assignment created successfully',
+      jobId,
+      message: 'Assignment created and generation started',
     });
   } catch (err) {
     const error = err as Error;
+    console.error('[createAssignment] ERROR:', error.message, error.stack);
     res.status(500).json({ success: false, message: error.message });
   }
 }
@@ -150,6 +179,47 @@ export async function getAssignments(req: Request, res: Response): Promise<void>
   try {
     const assignments = await Assignment.find().sort({ createdAt: -1 });
     res.status(200).json({ success: true, assignments });
+  } catch (err) {
+    const error = err as Error;
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+// GET /api/assignments/:id
+export async function getAssignmentById(req: Request, res: Response): Promise<void> {
+  try {
+    const id = req.params.id as string;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ success: false, message: 'Invalid assignment id' });
+      return;
+    }
+
+    const assignment = await Assignment.findById(id);
+
+    if (!assignment) {
+      res.status(404).json({ success: false, message: 'Assignment not found' });
+      return;
+    }
+
+    // If complete, also return the result
+    if (assignment.status === 'complete') {
+      const result = await Result.findOne({ assignmentId: assignment._id });
+      res.status(200).json({
+        success: true,
+        status: assignment.status,
+        assignment,
+        result: result ?? null,
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      status: assignment.status,
+      assignment,
+      result: null,
+    });
   } catch (err) {
     const error = err as Error;
     res.status(500).json({ success: false, message: error.message });

@@ -44,28 +44,37 @@ function buildPrompt(assignmentData: AssignmentData): string {
   const sectionLines = assignmentData.questionTypes
     .map(
       (qt, i) =>
-        `Section ${sectionLetters[i]}: ${qt.numQuestions} ${qt.type}, ${qt.marks} mark${qt.marks > 1 ? 's' : ''} each`
+        `Section ${sectionLetters[i]}: EXACTLY ${qt.numQuestions} ${qt.type} question${qt.numQuestions > 1 ? 's' : ''}, ${qt.marks} mark${qt.marks > 1 ? 's' : ''} each (DO NOT generate more or fewer)`
     )
     .join('\n');
+
+  const totalQuestions = assignmentData.questionTypes.reduce(
+    (sum, qt) => sum + qt.numQuestions,
+    0
+  );
 
   return `
 You are an expert teacher creating a formal exam paper.
 
-Create an exam paper with the following sections:
+STRICT RULES — follow exactly:
+1. Generate EXACTLY ${totalQuestions} questions total across all sections.
+2. Each section must have the EXACT number of questions specified below. Do not add extras.
+3. Return ONLY raw JSON. No markdown, no backticks, no explanation text.
+
+Sections to generate:
 ${sectionLines}
 
-Additional instructions from teacher: ${assignmentData.instructions || 'None'}
+Additional context from teacher: ${assignmentData.instructions || 'None'}
 
 Difficulty distribution per section: 40% Easy, 40% Moderate, 20% Challenging.
 
-Return ONLY a raw JSON object with NO markdown, NO backticks, and NO extra text. The JSON must follow this exact shape:
-
+The JSON must follow this EXACT shape (no extra fields):
 {
   "sections": [
     {
       "title": "Section A",
       "questionType": "Multiple Choice Questions",
-      "instruction": "Attempt all questions. Each question carries 1 mark.",
+      "instruction": "Attempt all questions. Each question carries X mark(s).",
       "questions": [
         {
           "text": "question text here",
@@ -80,7 +89,7 @@ Return ONLY a raw JSON object with NO markdown, NO backticks, and NO extra text.
   "metadata": {
     "subject": "extract from instructions or write General",
     "className": "extract from instructions or leave empty string",
-    "timeAllowed": "calculate based on total questions",
+    "timeAllowed": "calculate based on total questions (roughly 2 minutes per mark)",
     "totalMarks": 0
   }
 }
@@ -99,6 +108,7 @@ export async function generateQuestions(
   const prompt = buildPrompt(assignmentData);
 
   console.log('Calling Gemini API...');
+  console.log('Requested question counts:', assignmentData.questionTypes.map(qt => `${qt.type}: ${qt.numQuestions}`).join(', '));
 
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
@@ -125,14 +135,31 @@ export async function generateQuestions(
     throw new Error('Invalid response structure from Gemini');
   }
 
-  // Calculate totalMarks from input data
+  // ── ENFORCE exact question counts ────────────────────────────────────────
+  // Gemini often generates more questions than asked. Trim each section to
+  // exactly the requested numQuestions, regardless of what Gemini returned.
+  parsed.sections = parsed.sections.map((section, i) => {
+    const requested = assignmentData.questionTypes[i];
+    if (!requested) return section;
+
+    const trimmed = section.questions.slice(0, requested.numQuestions);
+    if (section.questions.length !== requested.numQuestions) {
+      console.warn(
+        `[aiService] Section ${sectionLetters[i]} (${requested.type}): Gemini returned ${section.questions.length} questions, expected ${requested.numQuestions}. Trimming to ${trimmed.length}.`
+      );
+    }
+    return { ...section, questions: trimmed };
+  });
+
+  // Calculate totalMarks from the ACTUAL trimmed data
   const totalMarks = assignmentData.questionTypes.reduce(
     (sum, qt) => sum + qt.numQuestions * qt.marks,
     0
   );
   parsed.metadata.totalMarks = totalMarks;
 
-  console.log('Gemini response parsed successfully');
+  console.log('Gemini response parsed and enforced successfully');
+  console.log('Final question counts:', parsed.sections.map((s, i) => `${sectionLetters[i]}: ${s.questions.length}`).join(', '));
 
   return {
     sections: parsed.sections,
