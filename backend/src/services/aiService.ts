@@ -60,6 +60,8 @@ STRICT RULES — follow exactly:
 1. Generate EXACTLY ${totalQuestions} questions total across all sections.
 2. Each section must have the EXACT number of questions specified below. Do not add extras.
 3. Return ONLY raw JSON. No markdown, no backticks, no explanation text.
+4. For "Multiple Choice Questions" sections, ALWAYS include an "options" array with EXACTLY 4 answer choices (e.g. ["A) ...", "B) ...", "C) ...", "D) ..."]).
+5. For all other question types (Short Questions, Long Answer, etc.), set "options" to null.
 
 Sections to generate:
 ${sectionLines}
@@ -68,7 +70,7 @@ Additional context from teacher: ${assignmentData.instructions || 'None'}
 
 Difficulty distribution per section: 40% Easy, 40% Moderate, 20% Challenging.
 
-The JSON must follow this EXACT shape (no extra fields):
+The JSON must follow this EXACT shape:
 {
   "sections": [
     {
@@ -81,7 +83,23 @@ The JSON must follow this EXACT shape (no extra fields):
           "difficulty": "Easy",
           "marks": 1,
           "type": "Multiple Choice Questions",
-          "answerKey": "answer here"
+          "options": ["A) option one", "B) option two", "C) option three", "D) option four"],
+          "answerKey": "A) option one"
+        }
+      ]
+    },
+    {
+      "title": "Section B",
+      "questionType": "Short Questions",
+      "instruction": "Attempt all questions. Each question carries X mark(s).",
+      "questions": [
+        {
+          "text": "question text here",
+          "difficulty": "Moderate",
+          "marks": 2,
+          "type": "Short Questions",
+          "options": null,
+          "answerKey": "brief answer here"
         }
       ]
     }

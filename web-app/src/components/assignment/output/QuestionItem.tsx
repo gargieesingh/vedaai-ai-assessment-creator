@@ -45,7 +45,7 @@ export default function QuestionItem({ question }: { question: Question }) {
           [{question.marks} Mark{question.marks > 1 ? "s" : ""}]
         </span>
       )}
-      {question.options && (
+      {question.options && question.options.length > 0 && (
         <ol
           type="a"
           style={{ paddingLeft: 20, marginTop: 6, listStyle: "lower-alpha" }}

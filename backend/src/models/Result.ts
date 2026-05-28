@@ -5,6 +5,7 @@ export interface IQuestion {
   difficulty: 'Easy' | 'Moderate' | 'Hard' | 'Challenging';
   marks: number;
   type: string;
+  options?: string[];
   answerKey?: string;
 }
 
@@ -40,6 +41,7 @@ const QuestionSchema = new Schema<IQuestion>({
   },
   marks: { type: Number, required: true },
   type: { type: String, required: true },
+  options: { type: [String], required: false },
   answerKey: { type: String, required: false }
 }); // Note: No _id: false here, questions inside sections get their own id
 
