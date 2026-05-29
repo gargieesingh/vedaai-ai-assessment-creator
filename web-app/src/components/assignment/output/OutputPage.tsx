@@ -7,6 +7,7 @@ import { GeneratedPaper } from "@/types/assignment";
 import QuestionSection from "@/components/assignment/output/QuestionSection";
 import StudentInfoSection from "@/components/assignment/output/StudentInfoSection";
 import AnswerKeySection from "@/components/assignment/output/AnswerKeySection";
+import { exportToPdf } from "@/lib/pdfExport";
 
 function PaperContent({ paper }: { paper: GeneratedPaper }) {
   return (
@@ -79,8 +80,10 @@ export default function OutputPage() {
   const generatedOutput = useAssignmentStore((s) => s.generatedOutput);
   const isGenerating = useAssignmentStore((s) => s.isGenerating);
 
-  const handleDownload = () => {
-    window.print();
+  const handleDownload = async () => {
+    if (generatedOutput) {
+      await exportToPdf(generatedOutput);
+    }
   };
 
   return (
