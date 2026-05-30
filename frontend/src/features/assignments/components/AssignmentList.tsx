@@ -264,7 +264,7 @@ export default function AssignmentList() {
           bottom: 0,
           left: 0,
           right: 0,
-          height: 110,
+          height: 76,
           display: "flex",
           alignItems: "flex-end",
           justifyContent: "center",
