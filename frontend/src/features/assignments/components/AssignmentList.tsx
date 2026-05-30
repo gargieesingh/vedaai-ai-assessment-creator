@@ -32,7 +32,7 @@ export default function AssignmentList() {
         } catch { /* silently skip if backend unavailable */ }
       }
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filtered = assignments.filter((a) => {
@@ -264,7 +264,7 @@ export default function AssignmentList() {
           bottom: 0,
           left: 0,
           right: 0,
-          height: 76,
+          height: 110,
           display: "flex",
           alignItems: "flex-end",
           justifyContent: "center",
@@ -318,8 +318,8 @@ export default function AssignmentList() {
         onClick={() => router.push("/assignments/create")}
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fillRule="evenodd" clipRule="evenodd" d="M2.5 9.99996C2.5 9.53972 2.8731 9.16663 3.33333 9.16663H16.6667C17.1269 9.16663 17.5 9.53972 17.5 9.99996C17.5 10.4602 17.1269 10.8333 16.6667 10.8333H3.33333C2.8731 10.8333 2.5 10.4602 2.5 9.99996Z" fill="#FF5623"/>
-          <path fillRule="evenodd" clipRule="evenodd" d="M10.0002 2.5C10.4604 2.5 10.8335 2.8731 10.8335 3.33333L10.8335 16.6667C10.8335 17.1269 10.4604 17.5 10.0002 17.5C9.53992 17.5 9.16683 17.1269 9.16683 16.6667L9.16683 3.33333C9.16683 2.8731 9.53993 2.5 10.0002 2.5Z" fill="#FF5623"/>
+          <path fillRule="evenodd" clipRule="evenodd" d="M2.5 9.99996C2.5 9.53972 2.8731 9.16663 3.33333 9.16663H16.6667C17.1269 9.16663 17.5 9.53972 17.5 9.99996C17.5 10.4602 17.1269 10.8333 16.6667 10.8333H3.33333C2.8731 10.8333 2.5 10.4602 2.5 9.99996Z" fill="#FF5623" />
+          <path fillRule="evenodd" clipRule="evenodd" d="M10.0002 2.5C10.4604 2.5 10.8335 2.8731 10.8335 3.33333L10.8335 16.6667C10.8335 17.1269 10.4604 17.5 10.0002 17.5C9.53992 17.5 9.16683 17.1269 9.16683 16.6667L9.16683 3.33333C9.16683 2.8731 9.53993 2.5 10.0002 2.5Z" fill="#FF5623" />
         </svg>
       </button>
 

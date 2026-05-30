@@ -239,10 +239,10 @@ export default function OutputPage() {
     ? `Generating your question paper…`
     : generatedOutput
       ? (() => {
-          const cleanBannerClass = (generatedOutput.class || "").replace(/^class\s+/i, "").trim();
-          return `Certainly, ${firstName}! Here are customized Question Paper for your${cleanBannerClass ? ` ${cleanBannerClass}` : ""
+        const cleanBannerClass = (generatedOutput.class || "").replace(/^class\s+/i, "").trim();
+        return `Certainly, ${firstName}! Here are customized Question Paper for your${cleanBannerClass ? ` ${cleanBannerClass}` : ""
           }${generatedOutput.subject ? ` ${generatedOutput.subject}` : ""} classes.`;
-        })()
+      })()
       : "No assignment generated yet.";
 
   // ── Empty state: not generating, no output ──────────────────────────────

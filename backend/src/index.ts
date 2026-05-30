@@ -17,35 +17,8 @@ const httpServer = createServer(app);
 const PORT = process.env.PORT || 3000;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'http://localhost:5173',
-];
-
-if (process.env.FRONTEND_URL) {
-  const cleanUrl = process.env.FRONTEND_URL.replace(/\/$/, '');
-  allowedOrigins.push(cleanUrl);
-}
-
-const checkOrigin = (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-  if (!origin) {
-    return callback(null, true);
-  }
-  const cleanOrigin = origin.replace(/\/$/, '');
-  const isAllowed = allowedOrigins.includes(cleanOrigin) || 
-                    cleanOrigin.endsWith('.vercel.app') || 
-                    /^https?:\/\/localhost(:\d+)?$/.test(cleanOrigin);
-
-  if (isAllowed) {
-    callback(null, true);
-  } else {
-    callback(new Error('Not allowed by CORS'));
-  }
-};
-
 app.use(cors({
-  origin: checkOrigin,
+  origin: FRONTEND_URL,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
@@ -57,7 +30,7 @@ console.log('Routes registered');
 
 const io = new Server(httpServer, {
   cors: {
-    origin: checkOrigin,
+    origin: FRONTEND_URL,
     methods: ['GET', 'POST'],
     credentials: true
   }

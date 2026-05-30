@@ -99,7 +99,7 @@ export default function AppShell({
               overflow: "auto",
               minHeight: 0,
               paddingTop: 12,
-              paddingBottom: 0,
+              paddingBottom: 10,
             }}
           >
             {children}
