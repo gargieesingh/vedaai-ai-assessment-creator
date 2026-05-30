@@ -2,7 +2,7 @@
 
 import React from "react";
 import dynamic from "next/dynamic";
-import generatingAnimation from "../../../../../public/generating.json";
+import generatingAnimation from "../../../../../public/468219d6-629f-11ee-8be4-7b2cd99be2c5.json";
 import { useAssignmentStore } from "@/features/assignments/hooks/assignmentStore";
 import { GeneratedPaper } from "@/features/assignments/types/assignment";
 import QuestionSection from "@/features/assignments/components/output/QuestionSection";
