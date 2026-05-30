@@ -35,6 +35,7 @@ interface AssignmentStore {
   updateQuestionType: (id: string, field: string, value: string | number) => void;
   submitForm: () => void;
   deleteAssignment: (id: string) => void;
+  patchAssignment: (id: string, patch: Partial<Assignment>) => void;
   setGeneratedOutput: (paper: GeneratedPaper | null) => void;
   setIsGenerating: (v: boolean) => void;
   resetForm: () => void;
@@ -116,13 +117,15 @@ export const useAssignmentStore = create<AssignmentStore>()(
 
         set({ isGenerating: true, generatedOutput: null });
 
+        const cleanClassVal = (formData.class || "").replace(/^class\s+/i, "").trim() || "____";
+        const cleanSubjectVal = (formData.subject || "").trim() || "General";
+        const initialAssignmentTitle = `Class ${cleanClassVal} ${cleanSubjectVal} Assignment`;
+
         fetch(`${apiBase}/api/assignments`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            title: formData.additionalInfo.trim()
-              ? formData.additionalInfo.trim().slice(0, 50)
-              : `${formData.subject} Assignment`,
+            title: initialAssignmentTitle,
             dueDate: formData.dueDate,
             questionTypes: formData.questionTypes.map((qt) => ({
               type: qt.type,
@@ -149,7 +152,7 @@ export const useAssignmentStore = create<AssignmentStore>()(
 
             const newAssignment: Assignment = {
               id: assignmentId,
-              title: `${formData.subject} Assignment`,
+              title: initialAssignmentTitle,
               assignedOn: new Date().toLocaleDateString("en-GB").replace(/\//g, "-"),
               dueDate: formData.dueDate,
               subject: formData.subject,
@@ -217,7 +220,25 @@ export const useAssignmentStore = create<AssignmentStore>()(
                   answerKey,
                 };
 
-                set({ isGenerating: false, generatedOutput: paper });
+                // Dynamically update the assignment list card with AI-extracted subject and grade
+                const finalClass = (response.result.metadata?.className || formData.class).replace(/^class\s+/i, "").trim() || "____";
+                const finalSubject = (response.result.metadata?.subject || formData.subject).trim() || "General";
+                const finalTitle = `Class ${finalClass} ${finalSubject} Assignment`;
+
+                set((state) => ({
+                  assignments: state.assignments.map((a) =>
+                    a.id === assignmentId
+                      ? {
+                          ...a,
+                          title: finalTitle,
+                          class: response.result.metadata?.className || formData.class,
+                          subject: response.result.metadata?.subject || formData.subject,
+                        }
+                      : a
+                  ),
+                  isGenerating: false,
+                  generatedOutput: paper,
+                }));
                 return;
               }
 
@@ -241,6 +262,13 @@ export const useAssignmentStore = create<AssignmentStore>()(
       deleteAssignment: (id) =>
         set((state) => ({
           assignments: state.assignments.filter((a) => a.id !== id),
+        })),
+
+      patchAssignment: (id, patch) =>
+        set((state) => ({
+          assignments: state.assignments.map((a) =>
+            a.id === id ? { ...a, ...patch } : a
+          ),
         })),
 
       setGeneratedOutput: (paper) => set({ generatedOutput: paper }),

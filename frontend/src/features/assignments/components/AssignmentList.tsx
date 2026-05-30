@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { useAssignmentStore } from "@/features/assignments/hooks/assignmentStore";
@@ -10,12 +10,36 @@ import { ProgressiveBlur } from "@/shared/components/ui/progressive-blur";
 
 export default function AssignmentList() {
   const assignments = useAssignmentStore((s) => s.assignments);
+  const patchAssignment = useAssignmentStore((s) => s.patchAssignment);
   const router = useRouter();
   const [search, setSearch] = useState("");
 
-  const filtered = assignments.filter((a) =>
-    a.title.toLowerCase().includes(search.toLowerCase())
-  );
+  // Retroactively hydrate any stale assignments still using form defaults (8th/Science)
+  useEffect(() => {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:5000";
+    assignments.forEach(async (a) => {
+      if ((a.subject === "Science" || !a.subject) && (a.class === "8th" || !a.class)) {
+        try {
+          const res = await fetch(`${apiBase}/api/assignments/${a.id}`);
+          if (!res.ok) return;
+          const data = await res.json();
+          const meta = data.result?.metadata;
+          if (!meta) return;
+          const finalClass = (meta.className || a.class || "8th").replace(/^class\s+/i, "").trim();
+          const finalSubject = (meta.subject || a.subject || "Science").trim();
+          const finalTitle = `Class ${finalClass} ${finalSubject} Assignment`;
+          patchAssignment(a.id, { class: meta.className || a.class, subject: meta.subject || a.subject, title: finalTitle });
+        } catch { /* silently skip if backend unavailable */ }
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const filtered = assignments.filter((a) => {
+    const dynamicTitle = `Class ${(a.class || "8th").replace(/^class\s+/i, "").trim()} ${(a.subject || "Science").trim()} Assignment`;
+    return dynamicTitle.toLowerCase().includes(search.toLowerCase()) ||
+      (a.title || "").toLowerCase().includes(search.toLowerCase());
+  });
 
   // Show empty state when there are no assignments at all
   if (assignments.length === 0) {
@@ -25,13 +49,31 @@ export default function AssignmentList() {
   return (
     <div
       className="assignment-list"
-      style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column" }}
+      style={{
+        position: "relative",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        maxWidth: "100%",
+        overflowX: "hidden",
+        boxSizing: "border-box",
+      }}
     >
 
       {/* Scrollable content */}
       <div
         className="assignment-list__content"
-        style={{ flex: 1, overflowY: "auto", paddingTop: 20, paddingBottom: 120 }}
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          overflowX: "hidden",
+          paddingTop: 20,
+          paddingBottom: 120,
+          width: "100%",
+          maxWidth: "100%",
+          boxSizing: "border-box",
+        }}
       >
         <div className="assignment-list__mobile-bar">
           <button
@@ -200,9 +242,12 @@ export default function AssignmentList() {
           className="assignment-list__grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
+            gridTemplateColumns: "repeat(2, 1fr)",
             gap: 16,
             paddingTop: 4,
+            width: "100%",
+            maxWidth: "100%",
+            boxSizing: "border-box",
           }}
         >
           {filtered.map((assignment) => (
