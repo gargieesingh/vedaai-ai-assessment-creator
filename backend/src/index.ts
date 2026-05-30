@@ -44,6 +44,10 @@ app.get('/', (req, res) => {
   res.send('API is running');
 });
 
+app.get('/ping', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 io.on('connection', (socket) => {
   console.log(`Client connected: ${socket.id}`);
 
