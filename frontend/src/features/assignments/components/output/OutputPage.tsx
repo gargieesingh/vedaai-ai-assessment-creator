@@ -59,7 +59,7 @@ function PaperContent({ paper }: { paper: GeneratedPaper }) {
       >
         <span>{paper.school}</span>
         <span style={{ fontSize: 24, fontWeight: 600, lineHeight: "160%", letterSpacing: "-0.04em" }}>Subject: {paper.subject}</span>
-        <span style={{ fontSize: 24, fontWeight: 600, lineHeight: "160%", letterSpacing: "-0.04em" }}>Class: {paper.class || "____"}</span>
+        <span style={{ fontSize: 24, fontWeight: 600, lineHeight: "160%", letterSpacing: "-0.04em" }}>Class: {(paper.class || "").replace(/^class\s+/i, "").trim() || "____"}</span>
       </div>
 
       {/* ── Frame 1984077298: Time Allowed + Maximum Marks ── */}
@@ -151,13 +151,14 @@ function PaperContent({ paper }: { paper: GeneratedPaper }) {
           padding: 0,
           width: "100%",
           maxWidth: 996,
-          height: 87,
+          height: 116,
         }}
       >
         {[
           "Name: ______________________",
           "Roll Number: ________________",
-          `Class: ${paper.class || "____"} Section: __________`,
+          `Class: ${(paper.class || "").replace(/^class\s+/i, "").trim() || "____"}`,
+          "Section: ____________________",
         ].map((line) => (
           <span
             key={line}
@@ -237,8 +238,11 @@ export default function OutputPage() {
   const introText = isGenerating
     ? `Generating your question paper…`
     : generatedOutput
-      ? `Certainly, ${firstName}! Here are customized Question Paper for your${generatedOutput.class ? ` ${generatedOutput.class}` : ""
-      }${generatedOutput.subject ? ` ${generatedOutput.subject}` : ""} classes.`
+      ? (() => {
+          const cleanBannerClass = (generatedOutput.class || "").replace(/^class\s+/i, "").trim();
+          return `Certainly, ${firstName}! Here are customized Question Paper for your${cleanBannerClass ? ` ${cleanBannerClass}` : ""
+          }${generatedOutput.subject ? ` ${generatedOutput.subject}` : ""} classes.`;
+        })()
       : "No assignment generated yet.";
 
   // ── Empty state: not generating, no output ──────────────────────────────

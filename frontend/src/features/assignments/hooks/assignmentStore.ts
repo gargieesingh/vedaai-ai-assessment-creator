@@ -120,14 +120,20 @@ export const useAssignmentStore = create<AssignmentStore>()(
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            title: `${formData.subject} Assignment`,
+            title: formData.additionalInfo.trim()
+              ? formData.additionalInfo.trim().slice(0, 50)
+              : `${formData.subject} Assignment`,
             dueDate: formData.dueDate,
             questionTypes: formData.questionTypes.map((qt) => ({
               type: qt.type,
               numQuestions: qt.count,
               marks: qt.marks,
             })),
-            instructions: `Subject: ${formData.subject}. Grade/Class: ${formData.class}. School: ${formData.school}. TimeAllowed: ${formData.timeAllowed}. Additional Instructions: ${formData.additionalInfo}`,
+            instructions: [
+              formData.additionalInfo.trim(),
+              formData.subject !== "Science" ? `Subject: ${formData.subject}` : "",
+              formData.class !== "8th" ? `Grade/Class: ${formData.class}` : "",
+            ].filter(Boolean).join(". ") || `Subject: Science. Grade/Class: 8th.`,
           }),
         })
           .then(async (res) => {
