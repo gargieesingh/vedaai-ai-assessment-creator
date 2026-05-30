@@ -1,0 +1,649 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+/* Paper output font override — forces Inter throughout the white paper card */
+.paper-font,
+.paper-font * {
+  font-family: 'Inter', sans-serif !important;
+}
+
+@theme {
+  --font-sans: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+}
+
+:root {
+  --orange: #E8490F;
+  --orange-glow: rgba(232, 73, 15, 0.15);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  background: #E6E6E6;
+  color: #1A1A1A;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* Kill browser autofill blue highlight */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 9999px #FFFFFF inset !important;
+  box-shadow: 0 0 0 9999px #FFFFFF inset !important;
+  -webkit-text-fill-color: #303030 !important;
+  transition: background-color 99999s ease-in-out 0s;
+}
+
+/* Hide scrollbars globally — scroll still works */
+* {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE / Edge */
+}
+*::-webkit-scrollbar {
+  display: none;                /* Chrome, Safari, Opera */
+}
+
+/* Due date input — placeholder color matches Figma #A9A9A9 */
+.due-date-input::placeholder {
+  color: #A9A9A9;
+  font-weight: 500;
+}
+
+/* Additional info textarea — placeholder color matches Figma rgba(48,48,48,0.6) */
+.additional-info-textarea::placeholder {
+  color: rgba(48, 48, 48, 0.6);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: -0.04em;
+  line-height: 140%;
+}
+
+/* Sidebar wordmark */
+.sidebar-wordmark {
+  font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 20px;
+  letter-spacing: -0.06em;
+  color: #303030;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+.mobile-bottom-nav {
+  display: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TABLET / MID-SIZED SCREENS — min-width: 421px and max-width: 1200px
+   Provides a Tailwind-like 'md'/'lg' breakpoint for smooth scaling.
+───────────────────────────────────────────────────────────────────────────── */
+@media (min-width: 769px) and (max-width: 1200px) {
+  .app-shell__inner {
+    padding: 12px !important;
+    gap: 12px !important;
+  }
+  
+  .app-shell__sidebar {
+    width: 304px !important;
+    min-width: 304px !important;
+  }
+
+  
+  .assignment-list__search {
+    width: auto !important;
+    flex: 1 !important;
+    max-width: 300px !important;
+  }
+
+  .assignment-list__filter {
+    gap: 16px !important;
+    padding: 0 16px !important;
+  }
+
+  .assignment-list__content,
+  .create-assignment__body {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 980px) {
+  .assignment-list__grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MOBILE RESPONSIVE STYLES — max-width: 420px
+   All styles use !important to override inline styles on React components.
+   This lives in globals.css to avoid styled-jsx scoping limitations.
+   Note: If you are seeing this, please hard refresh your browser!
+───────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* Fix body scroll on mobile */
+  body {
+    overflow: auto !important;
+  }
+
+  /* ── Output Page ──────────────────────────────────────────────────────── */
+  .output-page-container {
+    padding: 12px 12px 140px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* ── Header ───────────────────────────────────────────────────────────── */
+  .app-header {
+    border-radius: 16px !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    margin: 8px 10px 0 !important;
+  }
+
+  .app-header__inner {
+    height: 56px !important;
+    padding-left: 12px !important;
+    padding-right: 16px !important;
+  }
+
+  .app-header__left { gap: 6px !important; }
+  .app-header__right { gap: 10px !important; }
+
+  .app-header__back {
+    width: 48px !important;
+    height: 48px !important;
+    background: rgba(255, 255, 255, 0.25) !important;
+    box-shadow: none !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+
+  .app-header__user {
+    width: auto !important;
+    height: 36px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  /* Hide name + chevron — show avatar only */
+  .app-header__user-text,
+  .app-header__user-name,
+  .app-header__user-chevron {
+    display: none !important;
+  }
+
+  /* ── AppShell layout: hide sidebar, full-width content ───────────────── */
+  .app-shell {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow: auto !important;
+  }
+
+  .app-shell__inner {
+    flex-direction: column !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow: auto !important;
+  }
+
+  /* Hide the desktop sidebar entirely */
+  .app-shell__sidebar-wrap {
+    display: none !important;
+  }
+
+  /* Content takes full width */
+  .app-shell__content {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow: auto !important;
+    padding: 0 !important;
+  }
+  /* ── Screen 1: Assignment List ────────────────────────────────────────── */
+
+  /* Card compact layout */
+  .assignment-card {
+    --assignment-card-padding: 20px !important;
+    --assignment-card-height: 116px !important;
+    --assignment-card-gap: 24px !important;
+    --assignment-card-row-gap: 32px !important;
+    --assignment-card-row-height: 76px !important;
+    --assignment-card-title-height: 25px !important;
+    --assignment-card-title-size: 18px !important;
+    --assignment-card-meta-size: 16px !important;
+    height: 116px !important;
+    padding: 20px !important;
+    border-radius: 24px !important;
+    background: rgba(255, 255, 255, 0.75) !important;
+  }
+
+  /* Empty state */
+  .empty-state {
+    padding: 0 !important;
+  }
+
+  .empty-state__frame {
+    position: absolute !important;
+    width: 373px !important;
+    height: 657px !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    gap: 32px !important;
+  }
+
+  .empty-state__copy {
+    width: 100% !important;
+    max-width: 373px !important;
+    gap: 12px !important;
+  }
+
+  .empty-state__title {
+    font-size: 20px !important;
+    letter-spacing: -0.04em !important;
+    color: #303030 !important;
+    margin-top: 0 !important;
+  }
+
+  .empty-state__desc {
+    font-size: 16px !important;
+    line-height: 1.4 !important;
+    letter-spacing: -0.04em !important;
+    color: rgba(94, 94, 94, 0.8) !important;
+    max-width: 373px !important;
+  }
+
+  .empty-state__button {
+    width: 277px !important;
+    height: 46px !important;
+    padding: 12px 24px !important;
+    background: #181818 !important;
+    border: none !important;
+    border-radius: 48px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.04em !important;
+    margin-top: 0 !important;
+  }
+
+  .empty-state__button svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .assignment-list {
+    align-items: center !important;
+  }
+
+  .assignment-list__content {
+    padding: 0 16px 180px !important;
+    width: 100% !important;
+    max-width: 500px !important;
+    min-height: 816px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+  }
+
+  .assignment-list__mobile-bar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    height: 48px !important;
+    gap: 24px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .assignment-list__mobile-back {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 999px !important;
+    border: none !important;
+    background: rgba(255, 255, 255, 0.25) !important;
+    backdrop-filter: blur(12px) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+  }
+
+  .assignment-list__mobile-title {
+    flex: 1 !important;
+    text-align: center !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important;
+    letter-spacing: -0.04em !important;
+    color: #303030 !important;
+    margin-right: 48px !important;
+  }
+
+  .assignment-list__title {
+    display: none !important;
+  }
+
+  .assignment-list__filter {
+    height: 64px !important;
+    padding: 0 16px !important;
+    gap: 36px !important;
+    border-radius: 16px !important;
+  }
+
+  .assignment-list__filter-btn {
+    font-weight: 400 !important;
+  }
+
+  .assignment-list__search {
+    width: 100% !important;
+    max-width: 300px !important;
+  }
+
+  .assignment-list__search-input {
+    font-weight: 400 !important;
+  }
+
+  /* Single column cards */
+  .assignment-list__grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .assignment-list__footer {
+    display: none !important;
+  }
+
+  .assignment-list__fab {
+    position: absolute !important;
+    right: 20px !important;
+    bottom: 116px !important;
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 100px !important;
+    border: none !important;
+    background: #ffffff !important;
+    box-shadow: 0px 16px 48px rgba(0,0,0,0.12), 0px 32px 48px rgba(0,0,0,0.2) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    z-index: 5 !important;
+  }
+
+  .mobile-bottom-nav {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    display: block !important;
+  }
+
+  .mobile-bottom-nav__inner {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 24px;
+    width: calc(100vw - 20px);
+    max-width: 373px;
+    height: 72px;
+    background: #181818;
+    box-shadow: 0px 16px 48px rgba(0, 0, 0, 0.12), 0px 32px 48px rgba(0, 0, 0, 0.2);
+    border-radius: 24px;
+    box-sizing: border-box;
+  }
+
+  .mobile-bottom-nav__item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.25);
+    transition: color 0.2s;
+    width: 60px;
+    height: 52px;
+    border-radius: 26px;
+  }
+
+  .mobile-bottom-nav__item svg path {
+    transition: fill 0.2s;
+  }
+
+  .mobile-bottom-nav__item--active {
+    color: #FFFFFF;
+  }
+
+  .mobile-bottom-nav__item--active svg path {
+    fill-opacity: 1 !important;
+  }
+
+  .mobile-bottom-nav__icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .mobile-bottom-nav__text {
+    font-family: var(--font-bricolage), 'Bricolage Grotesque', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 140%;
+    text-align: center;
+    letter-spacing: -0.04em;
+  }
+
+  /* ── Screen 3: Create Assignment Form ─────────────────────────────────── */
+
+  /* Page title: hidden on mobile — Header shows ← Create Assignment */
+  .create-assignment__title {
+    display: none !important;
+  }
+
+  .create-assignment {
+    padding: 0 10px 116px !important;
+  }
+
+  .create-assignment__body {
+    width: 100% !important;
+    max-width: 500px !important;
+    margin: 0 auto !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Form card */
+  .create-details {
+    padding: 32px 16px !important;
+    gap: 24px !important;
+    border-radius: 32px !important;
+  }
+
+  .create-details__content {
+    gap: 16px !important;
+  }
+
+  /* Upload zone: real CSS border + #F6F6F6 background */
+  .create-details__upload-zone {
+    height: 202px !important;
+    padding: 24px 32px !important;
+    gap: 16px !important;
+    border-radius: 24px !important;
+    background: #F6F6F6 !important;
+    background-image: none !important;
+    border: 1.75px dashed rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .create-details__upload-subtitle {
+    font-size: 16px !important;
+  }
+
+  .create-details__label {
+    font-size: 16px !important;
+  }
+
+  /* Desktop question section: hidden on mobile */
+  .desktop-qt {
+    display: none !important;
+  }
+
+  /* Mobile question section: shown on mobile */
+  .mobile-qt {
+    display: flex !important;
+  }
+
+  /* Mobile stepper: override inline dimensions */
+  .mobile-stepper {
+    height: 38px !important;
+    width: 100% !important;
+    padding: 8px !important;
+  }
+
+  /* Additional Info section: hidden (not in Figma mobile) */
+  .create-details__additional {
+    display: none !important;
+  }
+
+  /* Footer: static layout on mobile */
+  .create-footer {
+    position: static !important;
+    padding: 24px 0 0 !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    margin: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .create-footer__row {
+    justify-content: center !important;
+    gap: 13px !important;
+    height: auto !important;
+  }
+
+  /* Previous button */
+  #form-prev-btn {
+    width: auto !important;
+    height: 46px !important;
+    font-size: 16px !important;
+  }
+
+  /* Continue/Next button */
+  #form-next-btn {
+    width: auto !important;
+    height: 46px !important;
+    font-size: 16px !important;
+  }
+
+  /* ── Screen 4: Output Page ────────────────────────────────────────────── */
+
+  /* Outer container: grey → white */
+  .output-outer {
+    background: #FFFFFF !important;
+    border-radius: 40px !important;
+    padding: 9px !important;
+    gap: 10px !important;
+  }
+
+  /* Dark header: semi-transparent → solid #303030 */
+  .output-header {
+    background: #303030 !important;
+    padding: 24px 16px !important;
+    min-height: auto !important;
+  }
+
+  /* Header intro text */
+  .output-header__intro {
+    font-size: 14px !important;
+    line-height: 17px !important;
+    color: #F0F0F0 !important;
+    font-weight: 700 !important;
+  }
+
+  /* Download button: desktop pill → mobile icon-only */
+  .output-download-desktop { display: none !important; }
+  .output-download-mobile  { display: flex !important; }
+
+  /* Paper card */
+  .output-paper {
+    width: 100% !important;
+    background: #F6F6F6 !important;
+    padding: 24px 16px !important;
+    min-height: auto !important;
+    border-radius: 32px !important;
+    gap: 24px !important;
+  }
+
+  /* School title: 32px → 20px */
+  .output-paper__title {
+    font-size: 20px !important;
+    line-height: 130% !important;
+    min-height: auto !important;
+  }
+
+  /* Time/Marks: row → column, 18px → 14px */
+  .output-paper__meta {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    height: auto !important;
+    gap: 10px !important;
+  }
+  .output-paper__meta-item {
+    font-size: 14px !important;
+    height: auto !important;
+  }
+
+  /* All questions compulsory text */
+  .output-paper__compulsory { height: auto !important; }
+  .output-paper__compulsory-text {
+    font-size: 14px !important;
+    height: auto !important;
+  }
+
+  /* Student info */
+  .output-paper__student { height: auto !important; }
+  .output-paper__student-line {
+    font-size: 14px !important;
+    height: auto !important;
+  }
+
+  /* QuestionSection child component */
+  .qs-title { font-size: 16px !important; }
+  .qs-subtitle {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+  }
+  .qs-instruction {
+    font-size: 14px !important;
+    font-style: italic !important;
+    font-weight: 400 !important;
+  }
+
+  /* AnswerKeySection child component */
+  .ak-label { font-size: 16px !important; }
+}
