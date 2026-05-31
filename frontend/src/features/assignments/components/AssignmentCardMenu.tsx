@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAssignmentStore } from "@/features/assignments/hooks/assignmentStore";
+import { GeneratedPaper } from "@/features/assignments/types/assignment";
 
 interface AssignmentCardMenuProps {
   assignmentId: string;
@@ -12,7 +13,91 @@ export default function AssignmentCardMenu({ assignmentId }: AssignmentCardMenuP
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const deleteAssignment = useAssignmentStore((s) => s.deleteAssignment);
+  const setGeneratedOutput = useAssignmentStore((s) => s.setGeneratedOutput);
+  const setIsGenerating = useAssignmentStore((s) => s.setIsGenerating);
+  const formData = useAssignmentStore((s) => s.formData);
   const router = useRouter();
+
+  const handleViewAssignment = async () => {
+    setDropdownOpen(false);
+    // Show loading state on output page immediately
+    setGeneratedOutput(null);
+    setIsGenerating(true);
+    router.push("/assignments/output");
+
+    try {
+      const apiBase =
+        process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
+        "http://localhost:3000";
+      const res = await fetch(`${apiBase}/api/assignments/${assignmentId}`);
+      if (!res.ok) throw new Error("Failed to fetch assignment");
+      const response = await res.json();
+
+      if (
+        (response.status === "complete" || response.status === "completed") &&
+        response.result
+      ) {
+        // Map sections from backend response
+        const sections = response.result.sections.map((sec: any) => ({
+          title: sec.title,
+          questionType: sec.questionType,
+          instruction: sec.instruction,
+          questions: sec.questions.map((q: any, qIdx: number) => ({
+            id: qIdx + 1,
+            text: q.text,
+            difficulty:
+              q.difficulty === "Easy"
+                ? "Easy"
+                : q.difficulty === "Medium" || q.difficulty === "Moderate"
+                ? "Moderate"
+                : "Challenging",
+            marks: q.marks,
+            options: q.options,
+          })),
+        }));
+
+        // Build answer key
+        const answerKey: GeneratedPaper["answerKey"] = [];
+        let ansIdx = 1;
+        response.result.sections.forEach((sec: any) => {
+          const sectionLetter = sec.title.replace("Section ", "").trim();
+          sec.questions.forEach((q: any, qIdx: number) => {
+            answerKey.push({
+              id: ansIdx++,
+              questionSection: sectionLetter,
+              questionNumber: qIdx + 1,
+              text: q.answerKey || q.correctAnswer || "Answer not available.",
+            });
+          });
+        });
+
+        const paper: GeneratedPaper = {
+          school:
+            response.result.metadata?.school ||
+            formData.school ||
+            "Delhi Public School",
+          subject:
+            response.result.metadata?.subject || formData.subject,
+          class:
+            response.result.metadata?.className || formData.class,
+          timeAllowed:
+            response.result.metadata?.timeAllowed || formData.timeAllowed,
+          maxMarks: response.result.metadata?.totalMarks || 0,
+          sections: sections.filter((s: any) => s.questions.length > 0),
+          answerKey,
+        };
+
+        setGeneratedOutput(paper);
+      } else {
+        // Assignment exists but hasn't been generated yet
+        setGeneratedOutput(null);
+      }
+    } catch {
+      setGeneratedOutput(null);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -79,10 +164,7 @@ export default function AssignmentCardMenu({ assignmentId }: AssignmentCardMenuP
         >
           <button
             id={`view-${assignmentId}`}
-            onClick={() => {
-              setDropdownOpen(false);
-              router.push("/assignments/output");
-            }}
+            onClick={handleViewAssignment}
             style={{
               width: 124,
               height: 32,
