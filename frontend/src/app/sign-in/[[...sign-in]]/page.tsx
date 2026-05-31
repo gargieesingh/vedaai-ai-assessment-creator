@@ -9,13 +9,13 @@ export default function SignInPage() {
         <SignIn
           appearance={{
             variables: {
-              colorPrimary: "#E8490F",
+              colorPrimary: "#050505ff", 
               colorBackground: "#ffffff",
               colorText: "#303030",
               colorTextSecondary: "#8A8A8A",
               colorInputBackground: "#F7F7F7",
               colorInputText: "#303030",
-              borderRadius: "12px",
+              borderRadius: "5px",
               fontFamily: "var(--font-plus-jakarta), sans-serif",
               fontSize: "15px",
             },
@@ -23,7 +23,7 @@ export default function SignInPage() {
               rootBox: { width: "100%", maxWidth: "440px" },
               card: {
                 width: "100%",
-                borderRadius: "20px",
+                borderRadius: "5px",
                 boxShadow: "0 8px 40px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06)",
                 border: "none",
                 padding: "32px 28px",
@@ -38,7 +38,7 @@ export default function SignInPage() {
               headerSubtitle: { color: "#8A8A8A", fontSize: "14px" },
               formFieldInput: {
                 border: "1.5px solid #E8E8E8",
-                borderRadius: "12px",
+                borderRadius: "5px",
                 fontSize: "15px",
                 height: "48px",
                 background: "#F7F7F7",
@@ -46,27 +46,27 @@ export default function SignInPage() {
               },
               formFieldLabel: { color: "#5A5A5A", fontWeight: "600", fontSize: "13px" },
               formButtonPrimary: {
-                background: "linear-gradient(135deg, #ff7243 0%, #c93d08 100%)",
-                borderRadius: "12px",
-                fontWeight: "600",
+                background: "linear-gradient(135deg, #0f0f0fff 0%, #000000ff 100%)",
+                borderRadius: "5px",
+                fontWeight: "600", 
                 fontSize: "15px",
                 height: "48px",
                 letterSpacing: "-0.02em",
-                boxShadow: "0 4px 16px rgba(232, 73, 15, 0.28)",
+                boxShadow: "0 4px 16px rgba(27, 18, 14, 0.28)",
                 border: "none",
               },
               socialButtonsBlockButton: {
                 border: "1.5px solid #E8E8E8",
-                borderRadius: "12px",
+                borderRadius: "5px",
                 height: "48px",
                 color: "#303030",
                 fontWeight: "500",
               },
-              footerActionLink: { color: "#E8490F", fontWeight: "600" },
+              footerActionLink: { color: "#000000", fontWeight: "600" },
               footer: { background: "#ffffff", borderTop: "none" },
               dividerLine: { background: "#EBEBEB" },
               dividerText: { color: "#B0B0B0", fontSize: "13px" },
-              alertText: { color: "#D00" },
+              alertText: { color: "#B91C1C" },
             },
           }}
         />

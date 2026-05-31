@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useAssignmentStore } from "@/features/assignments/hooks/assignmentStore";
 import { QuestionTypeRow } from "@/features/assignments/types/assignment";
 import Stepper from "@/shared/components/ui/Stepper";
@@ -875,10 +875,61 @@ export default function Step1Details({
                   right: 16,
                   top: "50%",
                   transform: "translateY(-50%)",
-                  pointerEvents: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                <CalendarPlusIcon />
+                <button
+                  type="button"
+                  aria-label="Open date picker"
+                  onClick={() => {
+                    const el = document.getElementById("__due-date-hidden__") as HTMLInputElement | null;
+                    if (el) {
+                      try { el.showPicker(); } catch { el.click(); }
+                    }
+                  }}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    padding: 0,
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <CalendarPlusIcon />
+                </button>
+                {/* Hidden native date input — triggered by the button above */}
+                <input
+                  id="__due-date-hidden__"
+                  type="date"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  onChange={(e) => {
+                    const raw = e.target.value; // YYYY-MM-DD
+                    if (!raw) {
+                      updateFormData({ dueDate: "" });
+                      return;
+                    }
+                    const [year, month, day] = raw.split("-");
+                    const formatted = `${day}-${month}-${year}`; // DD-MM-YYYY
+                    updateFormData({ dueDate: formatted });
+                    if (errors.dueDate) setErrors((p) => ({ ...p, dueDate: undefined }));
+                  }}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    opacity: 0,
+                    width: "100%",
+                    height: "100%",
+                    pointerEvents: "none",
+                    cursor: "pointer",
+                    accentColor: "#E8490F",
+                    colorScheme: "light",
+                  }}
+                />
               </div>
             </div>
             {errors.dueDate && (
