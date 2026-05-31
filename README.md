@@ -1,27 +1,12 @@
 <!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 <a id="readme-top"></a>
 
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-
-
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/gargieesingh/vedaai-ai-assessment-creator">
-    <img src="frontend/public/logo 2.svg" alt="Logo" width="80" height="80">
+    <img src="frontend/public/logo 2.svg" alt="Logo" width="100" height="100">
   </a>
 
   <h3 align="center">VedaAI</h3>
@@ -32,11 +17,7 @@
     <a href="https://github.com/gargieesingh/vedaai-ai-assessment-creator"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/gargieesingh/vedaai-ai-assessment-creator">View Demo</a>
-    &middot;
-    <a href="https://github.com/gargieesingh/vedaai-ai-assessment-creator/issues/new?labels=bug">Report Bug</a>
-    &middot;
-    <a href="https://github.com/gargieesingh/vedaai-ai-assessment-creator/issues/new?labels=enhancement">Request Feature</a>
+    <a href="https://vedaai-ai-assessment-creator.vercel.app">View Demo</a>
   </p>
 </div>
 
@@ -199,7 +180,7 @@ VedaAI provides an intuitive, high-performance interface to orchestrate assessme
 <!-- CONTACT -->
 ## Contact
 
-Project Link: (Veda AI Assessment Creator) [https://vedaai-ai-assessment-creator.vercel.app]
+Project Link: [https://vedaai-ai-assessment-creator.vercel.app](https://vedaai-ai-assessment-creator.vercel.app) 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
