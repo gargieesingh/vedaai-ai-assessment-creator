@@ -236,7 +236,7 @@ export default function OutputPage() {
 
   // Intro message — "Certainly, [Name]! Here are customised Question Paper for your [Grade] [Subject] classes."
   const introText = isGenerating
-    ? `Generating your question paper…`
+    ? `Assignment generation in progress...`
     : generatedOutput
       ? (() => {
         const cleanBannerClass = (generatedOutput.class || "").replace(/^class\s+/i, "").trim();
@@ -351,7 +351,7 @@ export default function OutputPage() {
               animationData={generatingAnimation}
               loop
               autoplay
-              style={{ width: 200, height: 200 }}
+              style={{ width: 400, height: 400 }} 
             />
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
               <p
@@ -366,7 +366,7 @@ export default function OutputPage() {
                   textAlign: "center",
                 }}
               >
-                Generating your question paper…
+                Assignment generation in progress...
               </p>
               <p
                 style={{
@@ -380,7 +380,7 @@ export default function OutputPage() {
                   textAlign: "center",
                 }}
               >
-                This may take a few moments. Please don&apos;t close the tab.
+                This may take a few seconds.
               </p>
             </div>
           </div>
