@@ -21,7 +21,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/gargieesingh/vedaai-ai-assessment-creator">
-    <img src="frontend/public/logo.svg" alt="Logo" width="80" height="80">
+    <img src="frontend/public/logo 2.svg" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">VedaAI</h3>
@@ -199,7 +199,7 @@ VedaAI provides an intuitive, high-performance interface to orchestrate assessme
 <!-- CONTACT -->
 ## Contact
 
-Project Link: [https://vedaai-ai-assessment-creator.vercel.app](Veda AI Assessment Creator)
+Project Link: (Veda AI Assessment Creator) [https://vedaai-ai-assessment-creator.vercel.app]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
