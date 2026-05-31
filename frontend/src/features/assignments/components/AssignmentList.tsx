@@ -43,7 +43,21 @@ export default function AssignmentList() {
 
   // Show empty state when there are no assignments at all
   if (assignments.length === 0) {
-    return <AssignmentEmptyState />;
+    return (
+      <>
+        <AssignmentEmptyState />
+        <button
+          className="assignment-list__fab"
+          aria-label="Create assignment"
+          onClick={() => router.push("/assignments/create")}
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fillRule="evenodd" clipRule="evenodd" d="M2.5 9.99996C2.5 9.53972 2.8731 9.16663 3.33333 9.16663H16.6667C17.1269 9.16663 17.5 9.53972 17.5 9.99996C17.5 10.4602 17.1269 10.8333 16.6667 10.8333H3.33333C2.8731 10.8333 2.5 10.4602 2.5 9.99996Z" fill="#FF5623" />
+            <path fillRule="evenodd" clipRule="evenodd" d="M10.0002 2.5C10.4604 2.5 10.8335 2.8731 10.8335 3.33333L10.8335 16.6667C10.8335 17.1269 10.4604 17.5 10.0002 17.5C9.53992 17.5 9.16683 17.1269 9.16683 16.6667L9.16683 3.33333C9.16683 2.8731 9.53993 2.5 10.0002 2.5Z" fill="#FF5623" />
+          </svg>
+        </button>
+      </>
+    );
   }
 
   return (
@@ -192,7 +206,7 @@ export default function AssignmentList() {
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fillRule="evenodd" clipRule="evenodd" d="M0 2.32153C0 1.03938 1.03938 0 2.32153 0H12.6785C13.9606 0 15 1.03938 15 2.32153C15 2.99412 14.7594 3.64453 14.3217 4.1552L11.9599 6.91062C11.0537 7.96787 10.5556 9.31442 10.5556 10.7069V12.5C10.5556 13.8807 9.43627 15 8.05556 15H6.94444C5.56373 15 4.44444 13.8807 4.44444 12.5V10.7069C4.44444 9.31442 3.94632 7.96787 3.04011 6.91062L0.678317 4.1552C0.240601 3.64453 0 2.99412 0 2.32153ZM2.32153 1.66667C1.95986 1.66667 1.66667 1.95986 1.66667 2.32153C1.66667 2.59627 1.76495 2.86195 1.94375 3.07054L4.30554 5.82597C5.47067 7.18529 6.11111 8.91657 6.11111 10.7069V12.5C6.11111 12.9602 6.48421 13.3333 6.94444 13.3333H8.05556C8.51579 13.3333 8.88889 12.9602 8.88889 12.5V10.7069C8.88889 8.91657 9.52933 7.18529 10.6945 5.82597L13.0563 3.07054C13.2351 2.86195 13.3333 2.59627 13.3333 2.32153C13.3333 1.95986 13.0401 1.66667 12.6785 1.66667H2.32153Z" fill="#A9A9A9" />
             </svg>
-            Filter By
+            Filter
           </button>
 
           <div className="assignment-list__search" style={{ position: "relative", width: "100%", maxWidth: 380 }}>
@@ -212,7 +226,7 @@ export default function AssignmentList() {
               id="assignment-search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search Assignment"
+              placeholder="Search Name"
               style={{
                 width: "100%",
                 height: 44,

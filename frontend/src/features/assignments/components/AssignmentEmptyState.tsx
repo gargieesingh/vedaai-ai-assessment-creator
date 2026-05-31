@@ -104,6 +104,7 @@ export default function AssignmentEmptyState() {
           margin-top: 6px;
           font-family: inherit;
           transition: opacity 0.18s;
+          white-space: nowrap;
         }
       `}</style>
     </div>

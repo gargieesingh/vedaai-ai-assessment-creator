@@ -5,7 +5,7 @@ import CreateAssignmentForm from "@/features/assignments/components/CreateAssign
 
 export default function CreateAssignmentPage() {
   return (
-    <AppShell headerTitle="Assignment" showBack showTitleIcon={false}>
+    <AppShell headerTitle="Create Assignment" showBack showTitleIcon={false}>
       <CreateAssignmentForm />
     </AppShell>
   );
